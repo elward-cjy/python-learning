@@ -103,6 +103,7 @@ def predict_passenger(Pclass,Sex,Age,SibSp,Parch,Fare,Embark):
     elif Age > 65:
         tmp_age = 'aged'
     else :
+        #print("enter ageage \n")
         tmp_age = 'adult' #年龄空值默认用均值代替     
     switchAge_survived = {'child':children_survived,'juvenile':juvenile_survived_,'adult':adults_survived,'aged':agedness_survived}
     switchAge_rate = {'child':children_rate,'juvenile':juvenile_rate,'adult':adults_rate,'aged':agedness_rate}
@@ -128,11 +129,11 @@ def predict_passenger(Pclass,Sex,Age,SibSp,Parch,Fare,Embark):
         test_Fare_survived = highfare_survived
         test_Fare_rate = highfare_rate
         
-    else:
+    else:#空值当作低票价
         test_Fare_survived = lowfare_survived
         test_Fare_rate = lowfare_rate
         
-
+    
     if Embark == 'S':
         test_Embark_survived = embarkS_survived
         test_Embark_rate = embarkS_rate
@@ -144,12 +145,15 @@ def predict_passenger(Pclass,Sex,Age,SibSp,Parch,Fare,Embark):
     elif Embark == 'C':
         test_Embark_survived = embarkC_survived
         test_Embark_rate = embarkC_rate 
-  
+    else:#空值用众数S代替
+        #print("enter embark else\n")
+        test_Embark_survived = embarkS_survived
+        test_Embark_rate = embarkS_rate
     #这里简单起见，假设各特征条件独立   
     predict_rate = test_Pclass_survived * test_age_survived * test_Sex_survived* \
         test_Parch_survived * test_Sibsp_survived * test_Fare_survived * test_Embark_survived/  \
         (test_Pclass_rate * test_Sex_rate * test_age_rate * test_Parch_rate * test_Sibsp_rate * test_Fare_rate * test_Embark_rate)
-   
+    #print("predict_rate:\n",predict_rate)
     if predict_rate > 0.5:
         return 'survived'
     else:
@@ -160,14 +164,3 @@ def predict_passenger(Pclass,Sex,Age,SibSp,Parch,Fare,Embark):
     
     
 
-# plt.figure(figsize= (10 ,5))
-# plt.subplot(121)
-# sns.countplot(x='Pclass', data=df_train)
-# plt.title('Pclass Count') 
-
-# plt.subplot(122)
-# plt.pie(df_train[['Pclass','Survived']].groupby(['Pclass']).count(),\
-#         labels=['1','2','3'],autopct='%1.0f%%')
-
-# plt.show()
-# print(df_train)'''
